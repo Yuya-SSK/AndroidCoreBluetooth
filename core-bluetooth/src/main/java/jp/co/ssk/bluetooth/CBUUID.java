@@ -20,6 +20,7 @@ public class CBUUID {
     @NonNull
     private final String mUuidString;
 
+    @SuppressWarnings("WeakerAccess")
     public CBUUID(@NonNull String uuidString) {
         // 16-bit (e.g. "1811")
         if (4 == uuidString.length()) {
@@ -52,25 +53,30 @@ public class CBUUID {
         mUuidString = uuidString.toUpperCase();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public CBUUID(@NonNull UUID androidUUID) {
         this(androidUUID.toString());
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public static CBUUID fromString(@NonNull String uuidString) {
         return new CBUUID(uuidString);
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public String uuidString() {
         return mUuidString;
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     String uuidStringOfLongType() {
         return generateUuidOfLongType(mUuidString);
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     UUID androidUUID() {
         return UUID.fromString(generateUuidOfLongType(mUuidString));

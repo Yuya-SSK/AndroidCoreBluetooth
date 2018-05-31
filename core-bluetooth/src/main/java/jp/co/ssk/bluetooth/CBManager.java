@@ -77,6 +77,7 @@ class CBManager {
                 new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void powerOn() {
         if (mHandler.isCurrentThread()) {
             _powerOn();
@@ -90,6 +91,7 @@ class CBManager {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void powerOff() {
         if (mHandler.isCurrentThread()) {
             _powerOff();
@@ -103,6 +105,7 @@ class CBManager {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public CBManagerState state() {
         final CBManagerState ret;
@@ -126,16 +129,19 @@ class CBManager {
         return ret;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     protected Context getContext() {
         return mContext;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     protected Handler getHandler() {
         return mHandler;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     protected BluetoothAdapter getAdapter() {
         if (null == mBluetoothAdapter) {

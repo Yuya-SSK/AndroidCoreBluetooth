@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,11 +16,10 @@ import java.util.Map;
 import java.util.Set;
 
 import jp.co.ssk.utility.SynchronizeCallback;
+import jp.co.ssk.utility.Types;
 
 public class CBCentralManager extends CBManager {
 
-    @NonNull
-    private final CBConfig mConfig = new CBConfig();
     @NonNull
     private final LinkedHashMap<String, CBPeripheral> mPeripherals = new LinkedHashMap<>();
     @NonNull
@@ -118,6 +116,7 @@ public class CBCentralManager extends CBManager {
         this(context, delegate, looper, null);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public CBCentralManager(
             @NonNull Context context,
             @NonNull CBCentralManagerDelegate delegate,
@@ -161,8 +160,9 @@ public class CBCentralManager extends CBManager {
         _initPeripherals();
     }
 
+    @SuppressWarnings("unused")
     public boolean isScanning() {
-        boolean ret;
+        Boolean ret;
         if (getHandler().isCurrentThread()) {
             ret = mScanner.isScanning();
         } else {
@@ -175,11 +175,15 @@ public class CBCentralManager extends CBManager {
                 }
             });
             callback.lock();
-            ret = (boolean) callback.getResult();
+            ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings("unused")
     public void connect(@NonNull final CBPeripheral peripheral) {
         getHandler().post(new Runnable() {
             @Override
@@ -189,6 +193,7 @@ public class CBCentralManager extends CBManager {
         });
     }
 
+    @SuppressWarnings("unused")
     public void cancelPeripheralConnection(@NonNull final CBPeripheral peripheral) {
         getHandler().post(new Runnable() {
             @Override
@@ -204,6 +209,7 @@ public class CBCentralManager extends CBManager {
         return new ArrayList<>();
     }
 
+    @SuppressWarnings("unused")
     @Nullable
     public CBPeripheral retrievePeripherals(@NonNull final String address) {
         final CBPeripheral peripheral;
@@ -219,11 +225,12 @@ public class CBCentralManager extends CBManager {
                 }
             });
             callback.lock();
-            peripheral = (CBPeripheral) callback.getResult();
+            peripheral = Types.autoCast(callback.getResult());
         }
         return peripheral;
     }
 
+    @SuppressWarnings("unused")
     public void scanForPeripherals(@NonNull final List<CBUUID> serviceUUIDs) {
         getHandler().post(new Runnable() {
             @Override
@@ -233,6 +240,7 @@ public class CBCentralManager extends CBManager {
         });
     }
 
+    @SuppressWarnings("unused")
     public void stopScan() {
         getHandler().post(new Runnable() {
             @Override
@@ -240,68 +248,6 @@ public class CBCentralManager extends CBManager {
                 _stopScan();
             }
         });
-    }
-
-    @NonNull
-    public Bundle getDefaultConfig(@Nullable final List<CBConfig.Key> keys) {
-        final Bundle config;
-        if (getHandler().isCurrentThread()) {
-            config = mConfig.getDefault(keys);
-        } else {
-            final SynchronizeCallback callback = new SynchronizeCallback();
-            getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.setResult(mConfig.getDefault(keys));
-                    callback.unlock();
-                }
-            });
-            callback.lock();
-            config = (Bundle) callback.getResult();
-            if (null == config) {
-                throw new UnknownError("null == config");
-            }
-        }
-        CBLog.d(config.toString());
-        return config;
-    }
-
-    @NonNull
-    public Bundle getConfig(@Nullable final List<CBConfig.Key> keys) {
-        final Bundle config;
-        if (getHandler().isCurrentThread()) {
-            config = mConfig.get(keys);
-        } else {
-            final SynchronizeCallback callback = new SynchronizeCallback();
-            getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.setResult(mConfig.get(keys));
-                    callback.unlock();
-                }
-            });
-            callback.lock();
-            config = (Bundle) callback.getResult();
-            if (null == config) {
-                throw new UnknownError("null == config");
-            }
-        }
-        CBLog.d(config.toString());
-        return config;
-    }
-
-    public void setConfig(@NonNull final Bundle config) {
-        CBLog.d(config.toString());
-        if (getHandler().isCurrentThread()) {
-            _setConfig(config);
-        } else {
-            getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    _setConfig(config);
-                }
-            });
-        }
     }
 
     @Override
@@ -329,14 +275,6 @@ public class CBCentralManager extends CBManager {
         for (Map.Entry<String, CBPeripheral> entry : mPeripherals.entrySet()) {
             CBPeripheral peripheral = entry.getValue();
             peripheral.cancelConnection();
-        }
-    }
-
-    private void _setConfig(@NonNull Bundle config) {
-        mConfig.set(config);
-        for (Map.Entry<String, CBPeripheral> entry : mPeripherals.entrySet()) {
-            CBPeripheral peripheral = entry.getValue();
-            peripheral.setConfig(config);
         }
     }
 

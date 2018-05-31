@@ -23,11 +23,13 @@ public class CBDescriptor extends CBAttribute {
         mBluetoothGattDescriptor = bluetoothGattDescriptor;
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public CBCharacteristic characteristic() {
         return mCharacteristic;
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public byte[] value() {
         return mBluetoothGattDescriptor.getValue();

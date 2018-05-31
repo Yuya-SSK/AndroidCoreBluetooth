@@ -184,11 +184,13 @@ abstract class AndroidPeripheral {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @NonNull
     public final String getAddress() {
         return mAddress;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @Nullable
     public final String getLocalName() {
         return mLocalName;
@@ -198,6 +200,7 @@ abstract class AndroidPeripheral {
         return GattConnectionState.Connected == getGattConnectionState();
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
     @NonNull
     final GattConnectionState getGattConnectionState() {
         final GattConnectionState ret;
@@ -214,6 +217,9 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
@@ -238,6 +244,9 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
@@ -257,6 +266,7 @@ abstract class AndroidPeripheral {
         }
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     @NonNull
     final AclConnectionState getAclConnectionState() {
         final AclConnectionState ret;
@@ -273,6 +283,9 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
@@ -292,6 +305,7 @@ abstract class AndroidPeripheral {
         }
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean isAclConnected() {
         return AclConnectionState.Connected == getAclConnectionState();
     }
@@ -320,7 +334,7 @@ abstract class AndroidPeripheral {
     }
 
     final boolean createBond() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _createBond();
         } else {
@@ -334,12 +348,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean cancelBondProcess() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _cancelBondProcess();
         } else {
@@ -353,12 +371,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean removeBond() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _removeBond();
         } else {
@@ -372,31 +394,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
-    final boolean setPairingConfirmation(final boolean enable) {
-        final boolean ret;
-        if (mHandler.isCurrentThread()) {
-            ret = _setPairingConfirmation(enable);
-        } else {
-            final SynchronizeCallback callback = new SynchronizeCallback();
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.setResult(_setPairingConfirmation(enable));
-                    callback.unlock();
-                }
-            });
-            callback.lock();
-            ret = Types.autoCast(callback.getResult());
-        }
-        return ret;
-    }
-
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean setPin(final String pinCode) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _setPin(pinCode);
         } else {
@@ -410,12 +417,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean setPasskey(final String pinCode) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _setPasskey(pinCode);
         } else {
@@ -429,12 +440,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean hasGatt() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = null != mBluetoothGatt;
         } else {
@@ -448,12 +462,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean connectGatt() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _connectGatt();
         } else {
@@ -467,12 +484,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean disconnectGatt() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _disconnectGatt();
         } else {
@@ -486,12 +507,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean discoverServices() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _discoverServices();
         } else {
@@ -505,12 +530,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean refreshGatt() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _refreshGatt();
         } else {
@@ -524,12 +553,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean closeGatt() {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _closeGatt();
         } else {
@@ -543,6 +576,9 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
@@ -563,12 +599,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean setCharacteristicNotification(@NonNull final BluetoothGattCharacteristic characteristic, final boolean enable) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _setCharacteristicNotification(characteristic, enable);
         } else {
@@ -582,12 +621,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean readCharacteristic(@NonNull final BluetoothGattCharacteristic characteristic) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _readCharacteristic(characteristic);
         } else {
@@ -601,12 +643,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean writeCharacteristic(@NonNull final BluetoothGattCharacteristic characteristic) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _writeCharacteristic(characteristic);
         } else {
@@ -620,12 +665,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean readDescriptor(@NonNull final BluetoothGattDescriptor descriptor) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _readDescriptor(descriptor);
         } else {
@@ -639,12 +687,15 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
     final boolean writeDescriptor(@NonNull final BluetoothGattDescriptor descriptor) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _writeDescriptor(descriptor);
         } else {
@@ -658,12 +709,16 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess", "UnusedReturnValue"})
     final boolean requestMtu(final int mtu) {
-        final boolean ret;
+        final Boolean ret;
         if (mHandler.isCurrentThread()) {
             ret = _requestMtu(mtu);
         } else {
@@ -677,6 +732,9 @@ abstract class AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
@@ -729,37 +787,6 @@ abstract class AndroidPeripheral {
             CBLog.d("removeBond() called. ret=true");
         } else {
             CBLog.e("removeBond() called. ret=false");
-        }
-        return ret;
-    }
-
-    private boolean _setPairingConfirmation(boolean enable) {
-        boolean ret = false;
-        CBLog.iOsApi("setPairingConfirmation(" + enable + ") exec.");
-        if (Build.VERSION_CODES.KITKAT > Build.VERSION.SDK_INT) {
-            try {
-                ret = (Boolean) Reflect.invokeMethod(
-                        mBluetoothDevice,
-                        "setPairingConfirmation",
-                        new Class<?>[]{boolean.class},
-                        new Object[]{enable}
-                );
-            } catch (IllegalAccessException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        } else if (Build.VERSION_CODES.N <= Build.VERSION.SDK_INT) {
-            try {
-                ret = mBluetoothDevice.setPairingConfirmation(enable);
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        } else {
-            ret = mBluetoothDevice.setPairingConfirmation(enable);
-        }
-        if (ret) {
-            CBLog.d("setPairingConfirmation() called. ret=true");
-        } else {
-            CBLog.e("setPairingConfirmation() called. ret=false");
         }
         return ret;
     }
@@ -1027,6 +1054,7 @@ abstract class AndroidPeripheral {
         return ret;
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         final GattConnectionState gattConnectionState = GattConnectionState.valueOf(newState);
         CBLog.iOsApi("Received " + gattConnectionState.name() + " of " + mAddress + ". status:" +
@@ -1038,6 +1066,7 @@ abstract class AndroidPeripheral {
         onGattConnectionStateChanged(mGattConnectionState, status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onServicesDiscovered(BluetoothGatt gatt, int status) {
         CBLog.iOsApi(String.format(Locale.US, "status=%d(0x%02x)", status, status));
         if (CBStatusCode.GATT_SUCCESS != status) {
@@ -1046,6 +1075,7 @@ abstract class AndroidPeripheral {
         onServicesDiscovered(status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         CBLog.iOsApi(characteristic.getUuid().toString() + " " +
                 String.format(Locale.US, "status=%d(0x%02x)", status, status));
@@ -1059,6 +1089,7 @@ abstract class AndroidPeripheral {
         onCharacteristicRead(characteristic, status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         CBLog.iOsApi(characteristic.getUuid().toString() + " " +
                 String.format(Locale.US, "status=%d(0x%02x)", status, status));
@@ -1068,11 +1099,13 @@ abstract class AndroidPeripheral {
         onCharacteristicWrite(characteristic, status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         CBLog.iOsApi(characteristic.getUuid().toString() + " raw data : " + Bytes.toHexString(characteristic.getValue()));
         onCharacteristicChanged(characteristic);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
         CBLog.iOsApi(descriptor.getCharacteristic().getUuid().toString() + " " +
                 descriptor.getUuid().toString() + " " +
@@ -1083,6 +1116,7 @@ abstract class AndroidPeripheral {
         onDescriptorRead(descriptor, status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onDescriptorWrite(final BluetoothGatt gatt, final BluetoothGattDescriptor descriptor, final int status) {
         CBLog.iOsApi(descriptor.getCharacteristic().getUuid().toString() + " " +
                 descriptor.getUuid().toString() + " " +
@@ -1093,16 +1127,19 @@ abstract class AndroidPeripheral {
         onDescriptorWrite(descriptor, status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onReliableWriteCompleted(BluetoothGatt gatt, int status) {
         CBLog.iOsApi(String.format(Locale.US, "status=%d(0x%02x)", status, status));
         onReliableWriteCompleted(status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
         CBLog.iOsApi("rssi=" + rssi + " " + String.format(Locale.US, "status=%d(0x%02x) ", status, status));
         onReadRemoteRssi(rssi, status);
     }
 
+    @SuppressWarnings({"UnusedParameters"})
     private void _onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
         CBLog.iOsApi("mtu=" + mtu + " " + String.format(Locale.US, "status=%d(0x%02x) ", status, status));
         onMtuChanged(mtu, status);

@@ -54,6 +54,7 @@ class CBScanner {
         }
     };
 
+    @SuppressWarnings("WeakerAccess")
     public CBScanner(
             @NonNull Context context,
             @NonNull ScanListener scanListener,

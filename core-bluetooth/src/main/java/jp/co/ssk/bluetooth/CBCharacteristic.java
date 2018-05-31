@@ -22,21 +22,25 @@ public class CBCharacteristic extends CBAttribute {
         mBluetoothGattCharacteristic = bluetoothGattCharacteristic;
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public CBService service() {
         return mService;
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public byte[] value() {
         return mBluetoothGattCharacteristic.getValue();
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public String stringValue() {
         return mBluetoothGattCharacteristic.getStringValue(0);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public List<CBDescriptor> descriptors() {
         List<CBDescriptor> descriptors = new ArrayList<>();
@@ -50,11 +54,13 @@ public class CBCharacteristic extends CBAttribute {
         return descriptors;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public EnumSet<CBCharacteristicProperties> properties() {
         return CBCharacteristicProperties.valueOf(mBluetoothGattCharacteristic.getProperties());
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean isNotifying() {
         int bluetoothGattCharacteristicProperties = mBluetoothGattCharacteristic.getProperties();
         return (CBCharacteristicProperties.Notify.contains(bluetoothGattCharacteristicProperties) ||

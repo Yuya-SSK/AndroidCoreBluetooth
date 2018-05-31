@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,6 +85,7 @@ public final class CBPeripheral extends AndroidPeripheral {
         mPeripheralStateMachine = new CBPeripheralStateMachine(this, peripheralStateMachineEventListener, getHandler().getLooper());
     }
 
+    @SuppressWarnings("unused")
     public void delegate(@Nullable final CBPeripheralDelegate delegate) {
         CBLog.vMethodIn();
         getHandler().post(new Runnable() {
@@ -104,6 +104,7 @@ public final class CBPeripheral extends AndroidPeripheral {
     public void discoverIncludedServices(@NonNull List<CBUUID> includedServiceUUIDs, @NonNull CBService service) {
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public List<CBService> services() {
         final List<CBService> ret;
@@ -120,6 +121,9 @@ public final class CBPeripheral extends AndroidPeripheral {
             });
             callback.lock();
             ret = Types.autoCast(callback.getResult());
+            if (null == ret) {
+                throw new UnknownError("null == ret");
+            }
         }
         return ret;
     }
@@ -132,6 +136,7 @@ public final class CBPeripheral extends AndroidPeripheral {
     public void discoverDescriptors(@NonNull CBCharacteristic characteristic) {
     }
 
+    @SuppressWarnings("unused")
     public void readValue(@NonNull final CBCharacteristic characteristic) {
         CBLog.vMethodIn();
         getHandler().post(new Runnable() {
@@ -143,6 +148,7 @@ public final class CBPeripheral extends AndroidPeripheral {
         });
     }
 
+    @SuppressWarnings("unused")
     public void readValue(@NonNull final CBDescriptor descriptor) {
         CBLog.vMethodIn();
         getHandler().post(new Runnable() {
@@ -154,6 +160,7 @@ public final class CBPeripheral extends AndroidPeripheral {
         });
     }
 
+    @SuppressWarnings("unused")
     public void writeValue(@NonNull final byte[] data, @NonNull final CBCharacteristic characteristic, @NonNull final CBCharacteristicWriteType type) {
         CBLog.vMethodIn();
         characteristic.getBluetoothGattCharacteristic().setValue(data);
@@ -167,6 +174,7 @@ public final class CBPeripheral extends AndroidPeripheral {
         });
     }
 
+    @SuppressWarnings("unused")
     public void writeValue(@NonNull final byte[] data, @NonNull final CBDescriptor descriptor) {
         CBLog.vMethodIn();
         descriptor.getBluetoothGattDescriptor().setValue(data);
@@ -179,6 +187,7 @@ public final class CBPeripheral extends AndroidPeripheral {
         });
     }
 
+    @SuppressWarnings("unused")
     public void setNotifyValue(final boolean enabled, @NonNull final CBCharacteristic characteristic) {
         CBLog.vMethodIn();
         getHandler().post(new Runnable() {
@@ -190,20 +199,13 @@ public final class CBPeripheral extends AndroidPeripheral {
         });
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public CBPeripheralState state() {
         return mPeripheralStateMachine.getState();
     }
 
-    @NonNull
-    public Bundle getConfig(@Nullable final List<CBConfig.Key> keys) {
-        return mPeripheralStateMachine.getConfig(keys);
-    }
-
-    public void setConfig(@NonNull final Bundle config) {
-        mPeripheralStateMachine.setConfig(config);
-    }
-
+    @SuppressWarnings("unused")
     @NonNull
     public CBPeripheralDetailedState detailedState() {
         return mPeripheralStateMachine.getDetailedState();

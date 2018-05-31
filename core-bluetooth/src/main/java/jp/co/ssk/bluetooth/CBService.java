@@ -22,11 +22,13 @@ public class CBService extends CBAttribute {
         mBluetoothGattService = bluetoothGattService;
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public CBPeripheral peripheral() {
         return mPeripheral;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean isPrimary() {
         return (mBluetoothGattService.getType() == BluetoothGattService.SERVICE_TYPE_PRIMARY);
     }
@@ -44,6 +46,7 @@ public class CBService extends CBAttribute {
         return characteristics;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public List<CBService> includedServices() {
         List<CBService> includedServices = new ArrayList<>();
@@ -57,6 +60,7 @@ public class CBService extends CBAttribute {
         return includedServices;
     }
 
+    @SuppressWarnings("unused")
     @Nullable
     CBCharacteristic characteristic(@NonNull CBUUID uuid) {
         BluetoothGattCharacteristic bluetoothGattCharacteristic = mBluetoothGattService.getCharacteristic(uuid.androidUUID());
@@ -66,6 +70,7 @@ public class CBService extends CBAttribute {
         return new CBCharacteristic(this, bluetoothGattCharacteristic);
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     BluetoothGattService getBluetoothGattService() {
         return mBluetoothGattService;

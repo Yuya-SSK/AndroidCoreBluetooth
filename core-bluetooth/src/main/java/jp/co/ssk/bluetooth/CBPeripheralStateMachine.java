@@ -3,11 +3,9 @@ package jp.co.ssk.bluetooth;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
@@ -155,39 +153,6 @@ final class CBPeripheralStateMachine extends StateMachine {
         return state;
     }
 
-    @NonNull
-    Bundle getConfig(@Nullable final List<CBConfig.Key> keys) {
-        final Bundle config;
-        if (getHandler().isCurrentThread()) {
-            config = mConfig.get(keys);
-        } else {
-            final SynchronizeCallback callback = new SynchronizeCallback();
-            getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.setResult(mConfig.get(keys));
-                    callback.unlock();
-                }
-            });
-            callback.lock();
-            config = (Bundle) callback.getResult();
-        }
-        return config;
-    }
-
-    void setConfig(@NonNull final Bundle config) {
-        if (getHandler().isCurrentThread()) {
-            mConfig.set(config);
-        } else {
-            getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    mConfig.set(config);
-                }
-            });
-        }
-    }
-
     void connect() {
         sendMessage(EVT_CONNECT);
     }
@@ -273,14 +238,8 @@ final class CBPeripheralStateMachine extends StateMachine {
                 }
                 break;
             case PasskeyConfirmation:
-                if (mConfig.isAutoPairingEnabled()) {
-                    peripheral.setPairingConfirmation(true);
-                }
                 break;
             case Consent:
-                if (mConfig.isAutoPairingEnabled()) {
-                    peripheral.setPairingConfirmation(true);
-                }
                 break;
             case DisplayPasskey:
                 break;
