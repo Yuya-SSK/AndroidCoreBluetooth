@@ -1,1 +1,1 @@
-include ':utility', ':core-bluetooth'
+include ':CoreBluetooth'

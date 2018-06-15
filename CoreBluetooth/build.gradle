@@ -1,0 +1,71 @@
+apply plugin: 'com.android.library'
+
+def VERSION_CODE = 1
+def VERSION_NAME = "1.0.0"
+
+android {
+    compileSdkVersion 27
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'assets/*'
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            output.packageLibrary.exclude("libs/*")
+            if (variant.name == android.buildTypes.release.name) {
+                outputFileName = output.outputFile.name.replace(("-release.aar"), "-${VERSION_NAME}.aar")
+            } else if (variant.name == android.buildTypes.debug.name) {
+                outputFileName = output.outputFile.name.replace((".aar"), "-${VERSION_NAME}.aar")
+            }
+        }
+    }
+}
+
+repositories {
+    maven { url 'http://Yuya-SSK.github.io/SskUtility/repository' }
+    maven { url 'http://Yuya-SSK.github.io/SskStateMachine/repository' }
+}
+
+dependencies {
+    implementation 'jp.co.ssk.support:utility:1.0.3'
+    implementation 'jp.co.ssk.support:state-machine:1.0.3'
+    implementation 'com.android.support:support-annotations:27.1.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+}
+
+def repo = new File(rootDir, "repository")
+
+apply plugin: "maven"
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository url: "file://${repo.absolutePath}"
+            pom.version = VERSION_NAME
+            pom.groupId = 'jp.co.ssk.support'
+            pom.artifactId = 'core-bluetooth'
+        }
+    }
+}
