@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 public class CBConfig {
 
     static final int RETRY_UNLIMITED = 0;
-    private static final CreateBondOption DEF_CREATE_BOND_OPTION = CreateBondOption.NotUse;
+    private static final boolean DEF_USE_CREATE_BOND = false;
     private static final RemoveBondOption DEF_REMOVE_BOND_OPTION = RemoveBondOption.NotUse;
     private static final boolean DEF_ASSIST_PAIRING_DIALOG_ENABLED = false;
     private static final boolean DEF_AUTO_PAIRING_ENABLED = false;
@@ -17,7 +17,7 @@ public class CBConfig {
     private static final long DEF_CONNECTION_RETRY_DELAY_TIME = 1000;
     private static final int DEF_CONNECTION_RETRY_COUNT = RETRY_UNLIMITED;
     private static final boolean DEF_USE_REFRESH_WHEN_DISCONNECT = true;
-    private CreateBondOption mCreateBondOption = DEF_CREATE_BOND_OPTION;
+    private boolean mUseCreateBond = DEF_USE_CREATE_BOND;
     private RemoveBondOption mRemoveBondOption = DEF_REMOVE_BOND_OPTION;
     private boolean mAssistPairingDialogEnabled = DEF_ASSIST_PAIRING_DIALOG_ENABLED;
     private boolean mAutoPairingEnabled = DEF_AUTO_PAIRING_ENABLED;
@@ -31,8 +31,8 @@ public class CBConfig {
     private int mConnectionRetryCount = DEF_CONNECTION_RETRY_COUNT;
     private boolean mUseRefreshWhenDisconnect = DEF_USE_REFRESH_WHEN_DISCONNECT;
 
-    CreateBondOption getCreateBondOption() {
-        return mCreateBondOption;
+    boolean isUseCreateBond() {
+        return mUseCreateBond;
     }
 
     RemoveBondOption getRemoveBondOption() {
@@ -78,12 +78,6 @@ public class CBConfig {
 
     boolean isUseRefreshWhenDisconnect() {
         return mUseRefreshWhenDisconnect;
-    }
-
-    public enum CreateBondOption {
-        NotUse,
-        UsedBeforeGattConnection,
-        UsedAfterServicesDiscovered
     }
 
     public enum RemoveBondOption {

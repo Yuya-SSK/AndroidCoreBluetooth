@@ -15,7 +15,6 @@ import java.util.List;
 
 import jp.co.ssk.utility.Handler;
 import jp.co.ssk.utility.SynchronousCallback;
-import jp.co.ssk.utility.Cast;
 
 @SuppressWarnings("unused")
 public final class CBPeripheral extends AndroidPeripheral {
@@ -100,13 +99,13 @@ public final class CBPeripheral extends AndroidPeripheral {
         if (getHandler().isCurrentThread()) {
             ret = mServices;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<List<CBService>> callback = new SynchronousCallback<>();
             getHandler().post(() -> {
                 callback.setResult(mServices);
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }

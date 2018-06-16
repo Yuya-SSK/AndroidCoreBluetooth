@@ -95,13 +95,13 @@ class CBManager {
         if (mHandler.isCurrentThread()) {
             ret = mState;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<CBManagerState> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(mState);
                 callback.unlock();
             });
             callback.lock();
-            ret = (CBManagerState) callback.getResult();
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }

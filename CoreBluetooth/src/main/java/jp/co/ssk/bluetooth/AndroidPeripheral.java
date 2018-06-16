@@ -27,7 +27,6 @@ import java.util.Locale;
 import jp.co.ssk.utility.Handler;
 import jp.co.ssk.utility.Reflect;
 import jp.co.ssk.utility.SynchronousCallback;
-import jp.co.ssk.utility.Cast;
 
 @SuppressWarnings("all")
 abstract class AndroidPeripheral {
@@ -154,13 +153,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = mGattConnectionState;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<GattConnectionState> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(mGattConnectionState);
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -178,13 +177,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = mBondState;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<BondState> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(mBondState);
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -210,13 +209,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = mAclConnectionState;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<AclConnectionState> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(mAclConnectionState);
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -263,13 +262,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _createBond();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_createBond());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -282,13 +281,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _cancelBondProcess();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_cancelBondProcess());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -301,13 +300,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _removeBond();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_removeBond());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -320,13 +319,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _setPin(pinCode);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_setPin(pinCode));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -339,13 +338,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _setPasskey(pinCode);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_setPasskey(pinCode));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -358,13 +357,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = null != mBluetoothGatt;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(null != mBluetoothGatt);
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -377,13 +376,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _connectGatt();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_connectGatt());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -396,13 +395,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _disconnectGatt();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_disconnectGatt());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -415,13 +414,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _discoverServices();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_discoverServices());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -434,13 +433,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _refreshGatt();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_refreshGatt());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -453,13 +452,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _closeGatt();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_closeGatt());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -473,13 +472,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _getServices();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<List<BluetoothGattService>> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_getServices());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -492,13 +491,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _setCharacteristicNotification(characteristic, enable);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_setCharacteristicNotification(characteristic, enable));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -511,13 +510,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _readCharacteristic(characteristic);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_readCharacteristic(characteristic));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -530,13 +529,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _writeCharacteristic(characteristic);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_writeCharacteristic(characteristic));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -549,13 +548,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _readDescriptor(descriptor);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_readDescriptor(descriptor));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -568,13 +567,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _writeDescriptor(descriptor);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_writeDescriptor(descriptor));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -587,13 +586,13 @@ abstract class AndroidPeripheral {
         if (mHandler.isCurrentThread()) {
             ret = _requestMtu(mtu);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(_requestMtu(mtu));
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }

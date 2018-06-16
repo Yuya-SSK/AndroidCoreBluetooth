@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import jp.co.ssk.utility.SynchronousCallback;
-import jp.co.ssk.utility.Cast;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class CBCentralManager extends CBManager {
@@ -144,13 +143,13 @@ public class CBCentralManager extends CBManager {
         if (getHandler().isCurrentThread()) {
             ret = mScanner.isScanning();
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             getHandler().post(() -> {
                 callback.setResult(mScanner.isScanning());
                 callback.unlock();
             });
             callback.lock();
-            ret = Cast.auto(callback.getResult());
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -177,13 +176,13 @@ public class CBCentralManager extends CBManager {
         if (getHandler().isCurrentThread()) {
             peripheral = _retrievePeripherals(address);
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<CBPeripheral> callback = new SynchronousCallback<>();
             getHandler().post(() -> {
                 callback.setResult(_retrievePeripherals(address));
                 callback.unlock();
             });
             callback.lock();
-            peripheral = Cast.auto(callback.getResult());
+            peripheral = callback.getResult();
         }
         return peripheral;
     }

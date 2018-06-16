@@ -94,13 +94,13 @@ class CBScanner {
         if (mHandler.isCurrentThread()) {
             ret = mIsScanning;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<Boolean> callback = new SynchronousCallback<>();
             mHandler.post(() -> {
                 callback.setResult(mIsScanning);
                 callback.unlock();
             });
             callback.lock();
-            ret = (boolean) callback.getResult();
+            ret = callback.getResult();
         }
         return ret;
     }

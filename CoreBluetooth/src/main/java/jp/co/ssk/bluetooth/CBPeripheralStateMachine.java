@@ -35,7 +35,7 @@ final class CBPeripheralStateMachine extends StateMachine {
     private final State mConnectionCanceledState = new ConnectionCanceledState();
     private final State mConnectionFailedState = new ConnectionFailedState();
     private final State mGattConnectingState = new GattConnectingState();
-    private final State mServiceDiscoveringState = new ServiceDiscoveringState();
+    private final State mServiceDiscoveringState = new ServicesDiscoveringState();
     private final State mConnectCancelingState = new ConnectCancelingState();
     private final State mCleanupConnectionState = new CleanupConnectionState();
     private final State mConnectionRetryReadyState = new ConnectionRetryReadyState();
@@ -56,7 +56,7 @@ final class CBPeripheralStateMachine extends StateMachine {
     @NonNull
     private ConnectionRetry mConnectionRetry = ConnectionRetry.No;
     @NonNull
-    private RemoveBond mRemoveBond = RemoveBond.No;
+    private RemoveBond mCleanupWithRemoveBond = RemoveBond.No;
     CBPeripheralStateMachine(
             @NonNull AndroidPeripheral peripheral,
             @NonNull EventListener eventListener,
@@ -106,13 +106,13 @@ final class CBPeripheralStateMachine extends StateMachine {
         if (getHandler().isCurrentThread()) {
             ret = mState;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<CBPeripheralState> callback = new SynchronousCallback<>();
             getHandler().post(() -> {
                 callback.setResult(mState);
                 callback.unlock();
             });
             callback.lock();
-            ret = (CBPeripheralState) callback.getResult();
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -134,13 +134,13 @@ final class CBPeripheralStateMachine extends StateMachine {
         if (getHandler().isCurrentThread()) {
             ret = mDetailedState;
         } else {
-            final SynchronousCallback callback = new SynchronousCallback();
+            final SynchronousCallback<CBPeripheralDetailedState> callback = new SynchronousCallback<>();
             getHandler().post(() -> {
                 callback.setResult(mDetailedState);
                 callback.unlock();
             });
             callback.lock();
-            ret = (CBPeripheralDetailedState) callback.getResult();
+            ret = callback.getResult();
             if (null == ret) {
                 throw new UnknownError("null == ret");
             }
@@ -397,13 +397,13 @@ final class CBPeripheralStateMachine extends StateMachine {
                 // ex) Select [Cancel] / Invalid PIN input
                 CBLog.w("Pairing canceled or timeout or invalid PIN input.");
                 owner.mConnectionRetry = ConnectionRetry.No;
-                owner.mRemoveBond = RemoveBond.No;
+                owner.mCleanupWithRemoveBond = RemoveBond.No;
                 owner.transitionTo(owner.mCleanupConnectionState);
             } else {
                 // Retry when unexpected connection failed.
                 CBLog.e("Connection failed.");
                 owner.mConnectionRetry = ConnectionRetry.Yes;
-                owner.mRemoveBond = RemoveBond.No;
+                owner.mCleanupWithRemoveBond = RemoveBond.No;
                 owner.transitionTo(owner.mCleanupConnectionState);
             }
         }
@@ -411,7 +411,7 @@ final class CBPeripheralStateMachine extends StateMachine {
 
     private static class GattConnectingState extends State<CBPeripheralStateMachine> {
 
-        private static final long TIMEOUT_MS = 15 * 1000;
+        private static final long GATT_CONNECTING_TIMEOUT_MS = 15 * 1000;
 
         private boolean mNeedPairing;
 
@@ -420,12 +420,12 @@ final class CBPeripheralStateMachine extends StateMachine {
             owner.setDetailedState(CBPeripheralDetailedState.GattConnecting);
             owner.mIsShowPairingDialog = false;
             mNeedPairing = false;
-            if (CBConfig.CreateBondOption.UsedBeforeGattConnection == owner.mConfig.getCreateBondOption() && !owner.getPeripheral().isBonded()) {
+            if (owner.mConfig.isUseCreateBond() && !owner.getPeripheral().isBonded()) {
                 mNeedPairing = true;
                 owner.sendMessage(Event.RequireCreateBond.ordinal());
             }
             owner.sendMessage(Event.RequireConnectGatt.ordinal());
-            owner.sendMessageDelayed(Event.GattConnectingTimeout.ordinal(), TIMEOUT_MS);
+            owner.sendMessageDelayed(Event.GattConnectingTimeout.ordinal(), GATT_CONNECTING_TIMEOUT_MS);
         }
 
         @Override
@@ -474,7 +474,7 @@ final class CBPeripheralStateMachine extends StateMachine {
                     break;
                 case UnknownError: {
                     owner.mConnectionRetry = ConnectionRetry.Yes;
-                    owner.mRemoveBond = RemoveBond.No;
+                    owner.mCleanupWithRemoveBond = RemoveBond.No;
                     owner.transitionTo(owner.mCleanupConnectionState);
                     break;
                 }
@@ -482,7 +482,7 @@ final class CBPeripheralStateMachine extends StateMachine {
                     if (!owner.hasMessages(Event.GattConnectionStabled.ordinal())) {
                         CBLog.e("Gatt connection timeout.");
                         owner.mConnectionRetry = ConnectionRetry.Yes;
-                        owner.mRemoveBond = RemoveBond.Yes;
+                        owner.mCleanupWithRemoveBond = RemoveBond.Yes;
                         owner.transitionTo(owner.mCleanupConnectionState);
                     }
                     break;
@@ -511,9 +511,9 @@ final class CBPeripheralStateMachine extends StateMachine {
         }
     }
 
-    private static class ServiceDiscoveringState extends State<CBPeripheralStateMachine> {
+    private static class ServicesDiscoveringState extends State<CBPeripheralStateMachine> {
 
-        private static final long TIMEOUT_MS = 30 * 1000;
+        private static final long SERVICES_DISCOVERING_TIMEOUT_MS = 30 * 1000;
         private static final long EXEC_INTERVAL = 5 * 1000;
 
         @Override
@@ -538,7 +538,7 @@ final class CBPeripheralStateMachine extends StateMachine {
         public boolean processMessage(@NonNull CBPeripheralStateMachine owner, @NonNull Message msg) {
             switch (Event.values()[msg.what]) {
                 case StartDiscoverServices:
-                    owner.sendMessageDelayed(Event.ServicesDiscoveringTimeout.ordinal(), TIMEOUT_MS);
+                    owner.sendMessageDelayed(Event.ServicesDiscoveringTimeout.ordinal(), SERVICES_DISCOVERING_TIMEOUT_MS);
                     owner.sendMessage(Event.ExecDiscoverServices.ordinal());
                     break;
                 case ExecDiscoverServices:
@@ -549,19 +549,19 @@ final class CBPeripheralStateMachine extends StateMachine {
                     owner.removeMessages(Event.ServicesDiscoveringTimeout.ordinal());
                     owner.removeMessages(Event.ExecDiscoverServices.ordinal());
                     if (verifyServices(owner)) {
-                        CBLog.i("Discover service success.");
+                        CBLog.i("Discover services success.");
                         owner.transitionTo(owner.mConnectedState);
                     } else {
                         CBLog.e("Verify services failed.");
                         owner.mConnectionRetry = ConnectionRetry.Yes;
-                        owner.mRemoveBond = RemoveBond.Yes;
+                        owner.mCleanupWithRemoveBond = RemoveBond.Yes;
                         owner.transitionTo(owner.mCleanupConnectionState);
                     }
                     break;
                 case DiscoverServicesFailure: {
-                    CBLog.e("Discover service failure.");
+                    CBLog.e("Discover services failure.");
                     owner.mConnectionRetry = ConnectionRetry.Yes;
-                    owner.mRemoveBond = RemoveBond.Yes;
+                    owner.mCleanupWithRemoveBond = RemoveBond.Yes;
                     owner.transitionTo(owner.mCleanupConnectionState);
                     break;
                 }
@@ -569,7 +569,7 @@ final class CBPeripheralStateMachine extends StateMachine {
                     owner.removeMessages(Event.ExecDiscoverServices.ordinal());
                     CBLog.e("Discover service timeout.");
                     owner.mConnectionRetry = ConnectionRetry.Yes;
-                    owner.mRemoveBond = RemoveBond.Yes;
+                    owner.mCleanupWithRemoveBond = RemoveBond.Yes;
                     owner.transitionTo(owner.mCleanupConnectionState);
                     break;
                 }
@@ -600,13 +600,13 @@ final class CBPeripheralStateMachine extends StateMachine {
 
     private static class ConnectCancelingState extends State<CBPeripheralStateMachine> {
 
-        private static final long CONNECT_CANCEL_WAIT_TIME = 15 * 1000;
+        private static final long CONNECT_CANCELING_TIMEOUT_MS = 15 * 1000;
 
         @Override
         public void enter(@NonNull CBPeripheralStateMachine owner) {
             owner.setDetailedState(CBPeripheralDetailedState.ConnectCanceling);
             teardownOrTransitionToNextState(owner);
-            owner.sendMessageDelayed(Event.ConnectCancelingTimeout.ordinal(), CONNECT_CANCEL_WAIT_TIME);
+            owner.sendMessageDelayed(Event.ConnectCancelingTimeout.ordinal(), CONNECT_CANCELING_TIMEOUT_MS);
         }
 
         @Override
@@ -661,7 +661,7 @@ final class CBPeripheralStateMachine extends StateMachine {
 
     private static class CleanupConnectionState extends State<CBPeripheralStateMachine> {
 
-        private static final long CLEANUP_WAIT_TIME = 15 * 1000;
+        private static final long CLEANUP_CONNECTION_TIMEOUT_MS = 15 * 1000;
 
         private boolean mNeededRetry;
         private boolean mNeededRemoveBond;
@@ -670,9 +670,9 @@ final class CBPeripheralStateMachine extends StateMachine {
         public void enter(@NonNull CBPeripheralStateMachine owner) {
             owner.setDetailedState(CBPeripheralDetailedState.CleanupConnection);
             mNeededRetry = (ConnectionRetry.Yes == owner.mConnectionRetry);
-            mNeededRemoveBond = (RemoveBond.Yes == owner.mRemoveBond);
+            mNeededRemoveBond = (RemoveBond.Yes == owner.mCleanupWithRemoveBond);
             cleanupOrTransitionToNextState(owner);
-            owner.sendMessageDelayed(Event.CleanupConnectionTimeout.ordinal(), CLEANUP_WAIT_TIME);
+            owner.sendMessageDelayed(Event.CleanupConnectionTimeout.ordinal(), CLEANUP_CONNECTION_TIMEOUT_MS);
         }
 
         @Override
@@ -814,13 +814,13 @@ final class CBPeripheralStateMachine extends StateMachine {
 
     private static class DisconnectingState extends State<CBPeripheralStateMachine> {
 
-        private static final long DISCONNECTION_WAIT_TIME = 15 * 1000;
+        private static final long DISCONNECTING_WAIT_TIME = 15 * 1000;
 
         @Override
         public void enter(@NonNull CBPeripheralStateMachine owner) {
             owner.setDetailedState(CBPeripheralDetailedState.Disconnecting);
             teardownOrTransitionToNextState(owner);
-            owner.sendMessageDelayed(Event.DisconnectingTimeout.ordinal(), DISCONNECTION_WAIT_TIME);
+            owner.sendMessageDelayed(Event.DisconnectingTimeout.ordinal(), DISCONNECTING_WAIT_TIME);
         }
 
         @Override
